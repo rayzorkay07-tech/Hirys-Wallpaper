@@ -16,58 +16,29 @@
 
     /* Global styling */
     html,body{height:100%;margin:0;}
-    body{
-      font-family: ModernizEmbedded, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-      font-weight:400;
-      background:#f3f4f6;
-      color:#111
-    }
-    .wrap{display:flex;gap:18px;padding:18px;align-items:flex-start}
+    body{font-family: ModernizEmbedded, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; font-weight:400; background:#f3f4f6; color:#111; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+    .wrap{display:flex;gap:18px;padding:18px;align-items:flex-start;max-width:1200px;margin:0 auto}
     .controls{width:360px;background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
     h1{font-size:16px;margin:0 0 12px}
     label{display:block;font-size:13px;margin-top:10px}
-    button{
-      display:inline-block;
-      padding:10px 12px;
-      border-radius:10px;
-      border:0;
-      background:#0190d6;
-      color:white;
-      font-weight:600;
-      cursor:pointer;
-      margin-top:12px;
-      font-family:ModernizEmbedded
-    }
+    button{display:inline-block;padding:10px 12px;border-radius:10px;border:0;background:#0190d6;color:white;font-weight:600;cursor:pointer;margin-top:12px;font-family:ModernizEmbedded}
     .btn-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-    .variant{
-      background:white;
-      color:#111;
-      border:1px solid #eceef7;
-      padding:8px 10px;
-      border-radius:8px;
-      cursor:pointer;
-      font-family:ModernizEmbedded
-    }
+    .variant{background:white;color:#111;border:1px solid #eceef7;padding:8px 10px;border-radius:8px;cursor:pointer;font-family:ModernizEmbedded}
     .variant.active{outline:3px solid rgba(79,70,229,0.12)}
-    .canvas-wrap{flex:1;display:flex;align-items:center;justify-content:center}
+    .canvas-wrap{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
     canvas{border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,0.12);background:white}
     .help{font-size:12px;color:#555;margin-top:10px}
     footer{font-size:12px;color:#666;margin-top:12px}
-    .canvas-footer{
-      position:absolute;
-      left:24px;
-      bottom:18px;
-      font-size:14px;
-      color:rgba(0,0,0,0.35);
-      font-family:ModernizEmbedded
-    }
+    .canvas-footer{position:absolute;left:24px;bottom:18px;font-size:14px;color:rgba(0,0,0,0.35);font-family:ModernizEmbedded}
+    .muted{color:#6b7280;font-size:13px}
+    .small{font-size:12px;color:#6b7280;margin-top:8px}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="controls">
       <h1>Irys — 1500 × 750 JPG Template</h1>
-      <div class="help">Standalone file. Choose a variation, preview, then download the JPG named <strong>Irys Trusted The Future.jpg</strong>.</div>
+      <div class="help">Standalone file. Choose a variation, click <strong>Render</strong> then <strong>Download JPG</strong>.</div>
 
       <label>Variation</label>
       <div class="btn-row" id="variants">
@@ -79,75 +50,118 @@
 
       <div style="display:flex;gap:8px;margin-top:12px">
         <button id="renderBtn">Render</button>
-        <button id="downloadBtn">Download JPG</button>
+        <button id="downloadBtn" style="display:none">Download JPG</button>
       </div>
 
       <div class="help" style="margin-top:12px">
-        Object centered, preserves aspect ratio, scaled to fit within <strong>718.1 × 131.9 px</strong>. The text <strong>TRUSTED THE FUTURE</strong> appears just below the object. Footer tag: <em>Hirys template</em>.
+        Object centered, preserves aspect ratio, scaled to fit within <strong>718.1 × 131.9 px</strong>. The text <strong>TRUSTED THE FUTURE</strong> appears just below the object.
       </div>
-      <footer>Font: Moderniz (embedded). This file is fully standalone.</footer>
+      <div class="small">Footer tag inside canvas: <em>Hirys template</em>.</div>
+      <footer>Font: Moderniz (embedded). File size: high quality (larger).</footer>
     </div>
 
-    <div style="position:relative;flex:1" class="canvas-wrap">
+    <div class="canvas-wrap">
       <canvas id="c" width="1500" height="750" role="img" aria-label="Design canvas 1500 by 750"></canvas>
       <div class="canvas-footer">Hirys template</div>
     </div>
   </div>
 
 <script>
+/* =========================
+   Embedded logo (base64)
+   ========================= */
 const logoDataUrl = "data:image/jpeg;base64,PASTE_BASE64_IMAGE_HERE";
 
+/* =========================
+   Canvas & UI
+   ========================= */
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 const variantButtons = Array.from(document.querySelectorAll('.variant'));
 const renderBtn = document.getElementById('renderBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 
+/* Object box constraints */
 const BOX_W = 718.1;
 const BOX_H = 131.9;
+
+/* Text properties */
 const TEXT = "TRUSTED THE FUTURE";
 const TEXT_FONT_FAMILY = "ModernizEmbedded, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
 
+/* Shadow helper */
 function offsetFromAngle(angleDeg, distance) {
   const rad = angleDeg * Math.PI / 180;
   return { x: Math.cos(rad) * distance, y: Math.sin(rad) * distance };
 }
 
+/* Variations */
 const variations = [
-  { bgA: "#34c9a7", bgB: "#51fed6", objColor: "#0190d6", shadowColor: "#015178", textColor: "#0190d6" },
-  { bgA: "#015178", bgB: "#0190d6", objColor: "#51fed6", shadowColor: "#34c9a7", textColor: "#51fed6" },
-  { bgA: "#b33318", bgB: "#ff5029", objColor: "#b33318", shadowColor: "#ff5029", textColor: "#ff5029" },
-  { bgA: "#8a92c1", bgB: "#bac5ff", objColor: "#0190d6", shadowColor: "#015178", textColor: "#015178" }
+  {
+    name: "Var 1",
+    bgA: "#34c9a7",
+    bgB: "#51fed6",
+    objColor: "#0190d6",
+    shadowColor: "#015178",
+    textColor: "#0190d6"
+  },
+  {
+    name: "Var 2",
+    bgA: "#015178",
+    bgB: "#0190d6",
+    objColor: "#51fed6",
+    shadowColor: "#34c9a7",
+    textColor: "#51fed6"
+  },
+  {
+    name: "Var 3",
+    bgA: "#b33318",
+    bgB: "#ff5029",
+    objColor: "#b33318",
+    shadowColor: "#ff5029",
+    textColor: "#ff5029"
+  },
+  {
+    name: "Var 4",
+    bgA: "#8a92c1",
+    bgB: "#bac5ff",
+    objColor: "#0190d6",
+    shadowColor: "#015178",
+    textColor: "#015178"
+  }
 ];
 
-const SHADOW_ANGLE = 135;
-const SHADOW_DISTANCE = 30;
-const SHADOW_BLUR = 25;
+const SHADOW_ANGLE = 135; // degrees
+const SHADOW_DISTANCE = 30; // px
+const SHADOW_BLUR = 25; // px
 
+/* Load embedded logo */
 const logoImg = new Image();
 logoImg.src = logoDataUrl;
-logoImg.onload = () => { setActiveVariant(0); renderAll(); };
+let logoLoaded = false;
+logoImg.onload = () => {
+  logoLoaded = true;
+  // initial preview render (does not reveal download button)
+  renderPreview();
+};
 
-let currentVariantIndex = 0;
-
-function setActiveVariant(idx) {
-  currentVariantIndex = idx;
-  variantButtons.forEach(b => b.classList.remove('active'));
-  variantButtons[idx].classList.add('active');
-}
-
-function recolorLogo(img, color) {
-  const w = img.width, h = img.height;
+/* Recolor logo using offscreen canvas (source-in) */
+function recolorLogoToColor(img, color) {
+  const w = img.width;
+  const h = img.height;
   const off = document.createElement('canvas');
   off.width = w; off.height = h;
   const octx = off.getContext('2d');
-  octx.drawImage(img, 0, 0);
+  octx.clearRect(0,0,w,h);
+  octx.drawImage(img, 0, 0, w, h);
   octx.globalCompositeOperation = 'source-in';
   octx.fillStyle = color;
-  octx.fillRect(0, 0, w, h);
+  octx.fillRect(0,0,w,h);
+  octx.globalCompositeOperation = 'source-over';
   return off;
 }
 
+/* Draw gradient top->bottom (linear 90deg) */
 function drawBackground(ctxRef, bgA, bgB) {
   const g = ctxRef.createLinearGradient(0, 0, 0, canvas.height);
   g.addColorStop(0, bgA);
@@ -156,45 +170,136 @@ function drawBackground(ctxRef, bgA, bgB) {
   ctxRef.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-function drawVariant(v) {
-  drawBackground(ctx, v.bgA, v.bgB);
-  const scale = Math.min(BOX_W / logoImg.width, BOX_H / logoImg.height, 1);
-  const w = logoImg.width * scale, h = logoImg.height * scale;
-  const x = (canvas.width - w) / 2, y = (canvas.height - h) / 2;
-
-  const recolored = recolorLogo(logoImg, v.objColor);
-  const shadowOffset = offsetFromAngle(SHADOW_ANGLE, SHADOW_DISTANCE);
-
-  ctx.shadowColor = v.shadowColor;
-  ctx.shadowBlur = SHADOW_BLUR;
-  ctx.shadowOffsetX = shadowOffset.x;
-  ctx.shadowOffsetY = shadowOffset.y;
-  ctx.drawImage(recolored, 0, 0, recolored.width, recolored.height, x, y, w, h);
-  ctx.shadowColor = 'transparent';
-  ctx.drawImage(recolored, 0, 0, recolored.width, recolored.height, x, y, w, h);
-
-  ctx.font = `bold ${Math.max(20, h * 0.3)}px ${TEXT_FONT_FAMILY}`;
-  ctx.fillStyle = v.textColor;
-  ctx.textAlign = "center";
-  ctx.fillText(TEXT, canvas.width / 2, y + h + 30);
+/* Compute fitted size preserving aspect ratio and not upscaling beyond original */
+function computeFittedBoxSize(imgW, imgH, boxW=BOX_W, boxH=BOX_H) {
+  const scale = Math.min(boxW / imgW, boxH / imgH, 1);
+  return { w: imgW * scale, h: imgH * scale };
 }
 
-function renderAll() { drawVariant(variations[currentVariantIndex]); }
+/* Draw current variant */
+function drawVariant(ctxRef, variant) {
+  // background
+  drawBackground(ctxRef, variant.bgA, variant.bgB);
 
+  if (!logoLoaded) {
+    // placeholder if logo not loaded yet
+    ctxRef.fillStyle = "#ffffff";
+    const px = (canvas.width - BOX_W) / 2;
+    const py = (canvas.height - BOX_H) / 2;
+    ctxRef.fillRect(px, py, BOX_W, BOX_H);
+    return;
+  }
+
+  // compute fitted size
+  const fit = computeFittedBoxSize(logoImg.width, logoImg.height, BOX_W, BOX_H);
+  const x = Math.round((canvas.width - fit.w) / 2);
+  const y = Math.round((canvas.height - fit.h) / 2);
+
+  // recolor logo to variant.objColor
+  const recoloredCanvas = recolorLogoToColor(logoImg, variant.objColor);
+
+  // draw shadow into temp canvas to avoid global shadow affecting text
+  const offShadow = offsetFromAngle(SHADOW_ANGLE, SHADOW_DISTANCE);
+  const tmp = document.createElement('canvas');
+  tmp.width = recoloredCanvas.width;
+  tmp.height = recoloredCanvas.height;
+  const tctx = tmp.getContext('2d');
+  tctx.clearRect(0,0,tmp.width,tmp.height);
+  tctx.save();
+  tctx.shadowColor = variant.shadowColor;
+  tctx.shadowBlur = SHADOW_BLUR;
+  tctx.shadowOffsetX = offShadow.x;
+  tctx.shadowOffsetY = offShadow.y;
+  tctx.drawImage(recoloredCanvas, 0, 0);
+  tctx.restore();
+
+  // draw tmp (shadow) then recolored image
+  ctxRef.drawImage(tmp, 0, 0, tmp.width, tmp.height, x, y, fit.w, fit.h);
+  ctxRef.drawImage(recoloredCanvas, 0, 0, recoloredCanvas.width, recoloredCanvas.height, x, y, fit.w, fit.h);
+
+  // draw text below
+  const gap = 18; // px between logo bottom and text top
+  const textY = y + fit.h + gap;
+
+  // set font size smaller than object
+  let fontSize = Math.round(Math.max(14, fit.h * 0.32));
+  ctxRef.font = `bold ${fontSize}px ${TEXT_FONT_FAMILY}`;
+  ctxRef.fillStyle = variant.textColor;
+  ctxRef.textBaseline = 'top';
+
+  // fit text to BOX_W if necessary
+  let metrics = ctxRef.measureText(TEXT);
+  if (metrics.width > BOX_W) {
+    let fs = fontSize;
+    while (fs > 10) {
+      ctxRef.font = `bold ${fs}px ${TEXT_FONT_FAMILY}`;
+      if (ctxRef.measureText(TEXT).width <= BOX_W) break;
+      fs -= 1;
+    }
+    fontSize = fs;
+  }
+
+  // final draw centered
+  ctxRef.font = `bold ${fontSize}px ${TEXT_FONT_FAMILY}`;
+  const finalMetrics = ctxRef.measureText(TEXT);
+  const textX = Math.round((canvas.width - finalMetrics.width) / 2);
+  ctxRef.fillText(TEXT, textX, textY);
+}
+
+/* Full render (user-triggered) */
+function renderFinal() {
+  const v = variations[currentVariantIndex];
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawVariant(ctx, v);
+  // show download button after render
+  downloadBtn.style.display = "inline-block";
+}
+
+/* Preview-render (initial, but does not reveal download button) */
+function renderPreview() {
+  const v = variations[currentVariantIndex];
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawVariant(ctx, v);
+}
+
+/* Download as JPG with specified filename */
 function downloadJPG() {
-  canvas.toBlob(blob => {
+  canvas.toBlob(function(blob) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = "Irys Trusted The Future.jpg";
+    a.download = 'Irys Trusted The Future.jpg';
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
-  }, "image/jpeg", 0.92);
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+  }, 'image/jpeg', 0.92);
 }
 
-variantButtons.forEach((btn, idx) => btn.addEventListener('click', () => { setActiveVariant(idx); renderAll(); }));
-renderBtn.addEventListener('click', renderAll);
+/* UI wiring */
+variantButtons.forEach((btn, idx) => {
+  btn.addEventListener('click', () => {
+    setActiveVariant(idx);
+    renderPreview();
+    // hide download until user clicks Render
+    downloadBtn.style.display = "none";
+  });
+});
+
+renderBtn.addEventListener('click', renderFinal);
 downloadBtn.addEventListener('click', downloadJPG);
+
+/* helper to highlight active */
+function setActiveVariant(idx) {
+  currentVariantIndex = idx;
+  variantButtons.forEach(b => b.classList.remove('active'));
+  const btn = variantButtons.find(b => parseInt(b.dataset.idx) === idx);
+  if (btn) btn.classList.add('active');
+}
+
+/* initial state */
+setActiveVariant(0);
+
 </script>
 </body>
 </html>
