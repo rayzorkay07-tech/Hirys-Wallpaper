@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HIRYS — Chrome Wallpaper Pack</title>
+
+  <!-- Optional: ganti font jika mau -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1: #51fed6; --fill1: #34c9a7; --outline1: #0190d6;
+      --bg2: #bac5ff; --fill2: #8a92c1; --outline2: #015178;
+      --bg3: #ff5029; --fill3: #b33318; --outline3: #b37808;
+      --bg4: #0190d6; --fill4: #015178; --outline4: #34c9a7;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: 'Orbitron', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background:#000;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:12px;
+      padding:12px;
+      box-sizing:border-box;
+      align-items:stretch;
+      min-height:100vh;
+    }
+
+    .card{
+      position:relative;
+      overflow:hidden;
+      border-radius:8px;
+      min-height:60vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    /* Each wallpaper uses an SVG inside. We size it to cover */
+    .card svg{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    /* Make the big text responsive */
+    .chrome-text{
+      font-weight:900;
+      letter-spacing: -8px;
+      text-transform:uppercase;
+    }
+
+    /* Helper: center and allow pointer events pass-through */
+    .svg-wrap{
+      width:100%;
+      height:100%;
+    }
+
+    /* small caption */
+    .caption{
+      position:absolute;
+      left:12px;
+      bottom:12px;
+      font-size:12px;
+      color:rgba(0,0,0,0.45);
+      background:rgba(255,255,255,0.35);
+      padding:6px 8px;
+      border-radius:6px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* make it look better on mobile */
+    @media (max-width:700px){
+      .card{ min-height:50vh; }
+      .chrome-text{ letter-spacing: -3px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+
+    <!-- WALLPAPER 1 -->
+    <div class="card" style="background:var(--bg1);">
+      <div class="svg-wrap" aria-hidden="true">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- metallic noise + displacement -->
+            <filter id="chromeFilter1" x="-50%" y="-50%" width="200%" height="200%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch" result="noise"/>
+              <feColorMatrix in="noise" type="saturate" values="0" result="mono"/>
+              <feGaussianBlur in="mono" stdDeviation="2" result="blur"/>
+              <feDisplacementMap in="SourceGraphic" in2="blur" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+              <!-- specular highlight -->
+              <feSpecularLighting in="mono" surfaceScale="6" specularConstant="0.8" specularExponent="20" lighting-color="#ffffff" result="spec">
+                <fePointLight x="-5000" y="-1000" z="2000" />
+              </feSpecularLighting>
+              <feComposite in="spec" in2="SourceGraphic" operator="in" result="lit"/>
+              <feMerge>
+                <feMergeNode in="lit"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+
+            <!-- gradient fill -->
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+              <stop offset="30%" stop-color="#d7fff8" stop-opacity="0.95"/>
+              <stop offset="65%" stop-color="var(--fill1)" stop-opacity="0.92"/>
+              <stop offset="100%" stop-color="#083" stop-opacity="0.75"/>
+            </linearGradient>
+
+            <!-- subtle inner gloss -->
+            <linearGradient id="gloss1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="rgba(255,255,255,0.9)"/>
+              <stop offset="0.35" stop-color="rgba(255,255,255,0.25)"/>
+              <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+            </linearGradient>
+
+            <!-- text style as symbol for reuse -->
+            <symbol id="theText">
+              <text x="50%" y="55%" text-anchor="middle" class="chrome-text" font-size="280" font-family="Orbitron, monospace">HIRYS</text>
+            </symbol>
+          </defs>
+
+          <!-- background faint vertical matrix lines for vibe -->
+          <g opacity="0.06">
+            <rect width="100%" height="100%" fill="black"/>
+            <!-- repeated vertical thin lines -->
+            <g stroke="black">
+              <!-- use multiple lines with varying opacity -->
+              <line x1="80" x2="80" y1="-200" y2="1100" stroke-width="2"/>
+              <line x1="220" x2="220" y1="-200" y2="1100" stroke-width="1"/>
+              <line x1="360" x2="360" y1="-200" y2="1100" stroke-width="3"/>
+              <line x1="520" x2="520" y1="-200" y2="1100" stroke-width="1.5"/>
+            </g>
+          </g>
+
+          <!-- Outline / Glow layer -->
+          <g transform="translate(0,0)">
+            <!-- stroke for outline -->
+            <use href="#theText" fill="none" stroke="var(--outline1)" stroke-width="26" stroke-linejoin="round"/>
+            <!-- outer glow using blurred duplicate -->
+            <use href="#theText" fill="none" stroke="var(--outline1)" stroke-width="80" stroke-linejoin="round" opacity="0.12" filter="url(#gblur1)"/>
+          </g>
+
+          <!-- main fill with chrome filter -->
+          <g filter="url(#chromeFilter1)">
+            <use href="#theText" fill="url(#g1)" stroke="rgba(255,255,255,0.08)" stroke-width="6" stroke-linejoin="round"/>
+          </g>
+
+          <!-- gloss overlay -->
+          <g style="mix-blend-mode:screen" opacity="0.95">
+            <use href="#theText" fill="url(#gloss1)" />
+          </g>
+
+          <!-- small bright specular flares -->
+          <g>
+            <circle cx="970" cy="300" r="10" fill="#fff" opacity="0.9"/>
+            <circle cx="510" cy="420" r="7" fill="#fff" opacity="0.75"/>
+          </g>
+        </svg>
+      </div>
+      <div class="caption">BG: var(--bg1) · Font: var(--fill1) · Outline: var(--outline1)</div>
+    </div>
+
+    <!-- WALLPAPER 2 -->
+    <div class="card" style="background:var(--bg2);">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="chromeFilter2" x="-50%" y="-50%" width="200%" height="200%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" stitchTiles="stitch" result="n2"/>
+              <feColorMatrix in="n2" type="saturate" values="0" result="m2"/>
+              <feGaussianBlur in="m2" stdDeviation="1.8" result="b2"/>
+              <feDisplacementMap in="SourceGraphic" in2="b2" scale="8" />
+              <feSpecularLighting in="m2" surfaceScale="5" specularConstant="0.6" specularExponent="16" lighting-color="#fff" result="s2">
+                <fePointLight x="-2000" y="-1000" z="1800" />
+              </feSpecularLighting>
+              <feMerge>
+                <feMergeNode in="s2"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+
+            <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+              <stop offset="40%" stop-color="var(--fill2)" stop-opacity="0.95"/>
+              <stop offset="100%" stop-color="#3f3c6b" stop-opacity="0.85"/>
+            </linearGradient>
+
+            <linearGradient id="gloss2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="rgba(255,255,255,0.9)"/>
+              <stop offset="0.3" stop-color="rgba(255,255,255,0.2)"/>
+              <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+            </linearGradient>
+
+            <symbol id="t2">
+              <text x="50%" y="55%" text-anchor="middle" class="chrome-text" font-size="280">HIRYS</text>
+            </symbol>
+          </defs>
+
+          <!-- Outline -->
+          <use href="#t2" fill="none" stroke="var(--outline2)" stroke-width="28" stroke-linejoin="round"/>
+
+          <!-- Chrome fill -->
+          <g filter="url(#chromeFilter2)">
+            <use href="#t2" fill="url(#g2)" stroke="rgba(255,255,255,0.08)" stroke-width="5" stroke-linejoin="round"/>
+          </g>
+
+          <!-- gloss -->
+          <use href="#t2" fill="url(#gloss2)" opacity="0.95"/>
+          <!-- highlights -->
+          <circle cx="920" cy="300" r="9" fill="#fff" opacity="0.9"/>
+        </svg>
+      </div>
+      <div class="caption">BG: var(--bg2) · Font: var(--fill2) · Outline: var(--outline2)</div>
+    </div>
+
+    <!-- WALLPAPER 3 -->
+    <div class="card" style="background:var(--bg3);">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="chromeFilter3" x="-50%" y="-50%" width="200%" height="200%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" result="n3"/>
+              <feColorMatrix in="n3" type="saturate" values="0" result="m3"/>
+              <feGaussianBlur in="m3" stdDeviation="2.2" result="b3"/>
+              <feDisplacementMap in="SourceGraphic" in2="b3" scale="12" />
+              <feSpecularLighting in="m3" surfaceScale="8" specularConstant="0.9" specularExponent="22" lighting-color="#fff" result="s3">
+                <fePointLight x="-4000" y="-800" z="2500" />
+              </feSpecularLighting>
+              <feMerge>
+                <feMergeNode in="s3"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+
+            <linearGradient id="g3" x1="0" y1="0" x2="1" y2="0.8">
+              <stop offset="0%" stop-color="#fff9f7" stop-opacity="0.95"/>
+              <stop offset="40%" stop-color="var(--fill3)" stop-opacity="0.96"/>
+              <stop offset="100%" stop-color="#3a1207" stop-opacity="0.9"/>
+            </linearGradient>
+
+            <linearGradient id="gloss3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="rgba(255,255,255,0.95)"/>
+              <stop offset="0.25" stop-color="rgba(255,255,255,0.25)"/>
+              <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+            </linearGradient>
+
+            <symbol id="t3">
+              <text x="50%" y="55%" text-anchor="middle" class="chrome-text" font-size="280">HIRYS</text>
+            </symbol>
+          </defs>
+
+          <use href="#t3" fill="none" stroke="var(--outline3)" stroke-width="30" stroke-linejoin="round"/>
+          <g filter="url(#chromeFilter3)">
+            <use href="#t3" fill="url(#g3)" stroke="rgba(255,255,255,0.08)" stroke-width="6" stroke-linejoin="round"/>
+          </g>
+          <use href="#t3" fill="url(#gloss3)" opacity="0.95"/>
+          <circle cx="740" cy="340" r="11" fill="#fff" opacity="0.95"/>
+        </svg>
+      </div>
+      <div class="caption">BG: var(--bg3) · Font: var(--fill3) · Outline: var(--outline3)</div>
+    </div>
+
+    <!-- WALLPAPER 4 -->
+    <div class="card" style="background:var(--bg4);">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="chromeFilter4" x="-50%" y="-50%" width="200%" height="200%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" stitchTiles="stitch" result="n4"/>
+              <feColorMatrix in="n4" type="saturate" values="0" result="m4"/>
+              <feGaussianBlur in="m4" stdDeviation="1.5" result="b4"/>
+              <feDisplacementMap in="SourceGraphic" in2="b4" scale="9" />
+              <feSpecularLighting in="m4" surfaceScale="5" specularConstant="0.7" specularExponent="18" lighting-color="#fff" result="s4">
+                <fePointLight x="-2500" y="-1000" z="1600" />
+              </feSpecularLighting>
+              <feMerge>
+                <feMergeNode in="s4"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+
+            <linearGradient id="g4" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#dff8ff" stop-opacity="0.95"/>
+              <stop offset="45%" stop-color="var(--fill4)" stop-opacity="0.96"/>
+              <stop offset="100%" stop-color="#021f30" stop-opacity="0.85"/>
+            </linearGradient>
+
+            <linearGradient id="gloss4" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="rgba(255,255,255,0.9)"/>
+              <stop offset="0.35" stop-color="rgba(255,255,255,0.25)"/>
+              <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+            </linearGradient>
+
+            <symbol id="t4">
+              <text x="50%" y="55%" text-anchor="middle" class="chrome-text" font-size="280">HIRYS</text>
+            </symbol>
+          </defs>
+
+          <use href="#t4" fill="none" stroke="var(--outline4)" stroke-width="28" stroke-linejoin="round"/>
+          <g filter="url(#chromeFilter4)">
+            <use href="#t4" fill="url(#g4)" stroke="rgba(255,255,255,0.08)" stroke-width="5" stroke-linejoin="round"/>
+          </g>
+          <use href="#t4" fill="url(#gloss4)" opacity="0.95"/>
+          <circle cx="900" cy="260" r="8" fill="#fff" opacity="0.95"/>
+        </svg>
+      </div>
+      <div class="caption">BG: var(--bg4) · Font: var(--fill4) · Outline: var(--outline4)</div>
+    </div>
+
+  </div>
+
+  <script>
+    /* Note:
+       - SVG uses CSS variables for some colors; to ensure the fill/outlines from your exact hex
+         choices appear, you can also inline-change the gradient stops if you want pure static colors.
+       - If you want to export each wallpaper as image of exact viewport ratio,
+         open each in full window (click the one you want to crop) and take screenshot or use "Print -> Save as PDF".
+    */
+  </script>
+</body>
+</html>
